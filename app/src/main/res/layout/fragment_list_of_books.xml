@@ -1,0 +1,57 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="it.jaschke.alexandria.ListOfBooks">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal|top">
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:paddingTop="30dp"
+           >
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/searchTextLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+            <EditText
+                android:layout_width = "fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="left"
+                android:id="@+id/searchText"
+                android:inputType="text"
+                android:saveEnabled="true"
+                android:hint="@string/search_hint"
+               />
+        </android.support.design.widget.TextInputLayout>
+           <ImageButton
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/searchButton"
+               android:src="@drawable/ic_action_search"
+               android:contentDescription="@string/search"
+               android:layout_toRightOf="@id/searchTextLayout"
+               style="?android:attr/buttonBarButtonStyle"
+               />
+       </LinearLayout>
+        <ListView android:id="@+id/listOfBooks"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+
+
+
+    </LinearLayout>
+
+</FrameLayout>
