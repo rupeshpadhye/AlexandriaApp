@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -62,11 +61,6 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                     @Override
                     public void onClick(View v) {
 
-                       /* InputMethodManager inputManager = (InputMethodManager)
-                                getSystemService(Context.INPUT_METHOD_SERVICE);
-
-                        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-                                InputMethodManager.HIDE_NOT_ALWAYS);*/
                         if(searchText.getText().toString().isEmpty()) {
                             Snackbar.make(getView(), "Input author name", Snackbar.LENGTH_LONG).show();
                             return;
