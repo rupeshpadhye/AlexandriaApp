@@ -12,13 +12,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
 
@@ -155,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                 .addToBackStack("Book Detail")
                 .commit();
 
+        Log.d("MainActivity","end of onItemSelected");
     }
 
     private class MessageReciever extends BroadcastReceiver {
@@ -162,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         public void onReceive(Context context, Intent intent) {
             if(intent.getStringExtra(MESSAGE_KEY)!=null){
                Snackbar.make(findViewById(R.id.container),intent.getStringExtra(MESSAGE_KEY), Snackbar.LENGTH_LONG).show();
-               // Toast.makeText(MainActivity.this, intent.getStringExtra(MESSAGE_KEY), Toast.LENGTH_LONG).show();
             }
         }
     }

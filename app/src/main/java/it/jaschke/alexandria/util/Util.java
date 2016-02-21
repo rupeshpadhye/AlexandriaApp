@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import it.jaschke.alexandria.MainActivity;
 
@@ -17,7 +18,6 @@ public final class Util {
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-        Log.d(LOG_TAG,""+netInfo.isConnected());
         return ( netInfo != null && netInfo.isConnected() );
     }
 
@@ -27,5 +27,11 @@ public final class Util {
         Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
         messageIntent.putExtra(MainActivity.MESSAGE_KEY,message);
         LocalBroadcastManager.getInstance(context).sendBroadcast(messageIntent);
+    }
+
+
+    public static void hideSoftKeyboard(Context context,View view){
+        InputMethodManager imm =(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

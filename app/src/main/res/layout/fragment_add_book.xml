@@ -27,13 +27,17 @@
                 android:maxLength="@integer/ean_size"
                 android:maxLines="1"
                 android:hint="@string/input_hint"
-                android:paddingRight="20dp"/>
+                android:paddingRight="20dp"
+                android:imeOptions="actionDone"
+                />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/scan_button"
-                android:id="@+id/scan_button"/>
+                android:id="@+id/scan_button"
+                android:visibility="gone"
+                />
 
         </LinearLayout>
 
@@ -107,7 +111,7 @@
                 android:layout_weight="1"
                 style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/delete_button"
-                android:drawableLeft="@drawable/ic_action_discard"
+                android:drawableLeft="@android:drawable/ic_delete"
                 android:visibility="invisible"
                 />
 
@@ -124,6 +128,16 @@
                 />
 
         </LinearLayout>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible"
+            />
 
     </RelativeLayout>
 </FrameLayout>

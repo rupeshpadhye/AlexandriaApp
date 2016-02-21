@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 
@@ -21,13 +22,12 @@ public class VolumeInfo implements Parcelable {
     private String title;
     private String previewLink;
     private String description;
+    private List<IndustryIdentifiers> industryIdentifiers;
     private ImageLinks imageLinks;
     private String subtitle;
     private String contentVersion;
-    private ArrayList<String> categories;
-    /*private String language;
-    private String publishedDate;
-*/
+    private List<String> categories;
+
 
 
     private VolumeInfo(Parcel parcel) {
@@ -41,13 +41,18 @@ public class VolumeInfo implements Parcelable {
         title=parcel.readString();
         previewLink=parcel.readString();
         description=parcel.readString();
-        imageLinks=parcel.readParcelable(ImageLinks.class.getClassLoader());
+        industryIdentifiers = new ArrayList<IndustryIdentifiers>();
+        parcel.readTypedList(industryIdentifiers, IndustryIdentifiers.CREATOR);
+        //imageLinks=parcel.readParcelable(VolumeInfo.class.getClassLoader());
         subtitle=parcel.readString();
         contentVersion=parcel.readString();
-        categories= parcel.readArrayList(null);
-        /*language=parcel.readString();
-        publishedDate=parcel.readString();
-*/
+        if (categories == null) {
+            categories = new ArrayList();
+        }
+        parcel.readStringList(categories);
+
+
+
     }
 
     @Override
@@ -65,7 +70,8 @@ public class VolumeInfo implements Parcelable {
         out.writeList(authors);
         out.writeString(title);
         out.writeString(description);
-        out.writeParcelable(imageLinks, flags);
+        out.writeTypedList(industryIdentifiers);
+        //out.writeParcelable(imageLinks, flags);
         out.writeString(subtitle);
         out.writeString(contentVersion);
         out.writeList(categories);

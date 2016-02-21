@@ -31,6 +31,7 @@
                 android:inputType="text"
                 android:saveEnabled="true"
                 android:hint="@string/search_hint"
+                android:imeOptions="actionDone"
                />
         </android.support.design.widget.TextInputLayout>
            <ImageButton

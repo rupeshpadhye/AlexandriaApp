@@ -3,10 +3,12 @@
     <string-array name="pref_start_options">
         <item>@string/books</item>
         <item>@string/scan</item>
+        <item>@string/about</item>
     </string-array>
 
     <string-array name="pref_start_values">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
     </string-array>
 </resources>

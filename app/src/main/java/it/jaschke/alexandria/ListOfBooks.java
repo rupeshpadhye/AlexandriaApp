@@ -20,6 +20,7 @@ import android.widget.ListView;
 import it.jaschke.alexandria.api.BookListAdapter;
 import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.data.AlexandriaContract;
+import it.jaschke.alexandria.util.Util;
 
 //added Currently no books available  message if books not stored in locale or wrong criteria
 //removed deprecated method onAttach(Activity) to onAttach(context)
@@ -43,7 +44,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+    Log.d(LOG_TAG,"ListBooks Oncreate");
         Cursor cursor = getActivity().getContentResolver().query(
                 AlexandriaContract.BookEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
@@ -60,11 +61,10 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        if(searchText.getText().toString().isEmpty()) {
+                       /* if(searchText.getText().toString().isEmpty()) {
                             Snackbar.make(getView(), "Input author name", Snackbar.LENGTH_LONG).show();
                             return;
-                        }
+                        }*/
                         ListOfBooks.this.restartLoader();
                     }
                 }
@@ -78,12 +78,17 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cursor = bookListAdapter.getCursor();
+
                 if (cursor != null && cursor.moveToPosition(position)) {
-                    ((Callback)getActivity())
+                    Util.hideSoftKeyboard(getContext(),getView());
+                    ((Callback) getActivity())
                             .onItemSelected(cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry._ID)));
+
+
                 }
             }
         });
+
 
         return rootView;
     }
@@ -141,6 +146,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     //removed deprecated method onAttach(Activity) to onAttach(context) -Rupesh P
     @Override
     public void onAttach(Context context) {
+
         super.onAttach(context);
         if(context instanceof Activity) {
             Activity   activity=(Activity)context;

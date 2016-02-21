@@ -11,7 +11,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +25,7 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.dto.VolumeInfo;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
+import it.jaschke.alexandria.util.Util;
 
 
 public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, BookDetailsReceiver.Receiver {
@@ -38,6 +38,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private static final String SCAN_CONTENTS = "scanContents";
     private String mScanFormat = "Format:";
     private String mScanContents = "Contents:";
+
+    private static final int  BOOK_DETAIL_SUCCESS  =0;
+    private static  final  int BOOK_SAVE_SUCCESS=1;
+
+    private VolumeInfo mVolumeInfo;
 
 
     private BookDetailsReceiver mReceiver;
@@ -65,10 +70,23 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        // TODO Auto-generated method stub
-        VolumeInfo volumeInfo = resultData.getParcelable("BOOK_DETAILS");
-        Log.d("Rupesh", "received result from Service" + volumeInfo);
-        updateView(volumeInfo);
+
+        hideProgress();
+        if(resultCode==BOOK_DETAIL_SUCCESS) {
+            mVolumeInfo = resultData.getParcelable("BOOK_DETAILS");
+            updateView(mVolumeInfo);
+        }
+        else if(resultCode==BOOK_SAVE_SUCCESS)
+        {
+            Util.broadCastMessage(getContext(), getResources().getString(R.string.book_save_success));
+            clearISBNCode();
+
+        }
+        else{
+            Util.broadCastMessage(getContext(), getResources().getString(R.string.error));
+
+        }
+
 
     }
 
@@ -88,7 +106,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     .execute(volumeInfo.getImageLinks().getThumbnail());
             rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
         }
-        ((TextView) rootView.findViewById(R.id.categories)).setText(volumeInfo.getCategories().toString());
+        if(volumeInfo.getCategories()!=null && !volumeInfo.getCategories().isEmpty()) {
+            ((TextView) rootView.findViewById(R.id.categories)).setText(volumeInfo.getCategories().toString());
+        }
         rootView.findViewById(R.id.save_button).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
     }
@@ -98,6 +118,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ean = (EditText) rootView.findViewById(R.id.ean);
+
 
         ean.addTextChangedListener(new TextWatcher() {
             @Override
@@ -122,6 +143,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     return;
                 }
                 //Once we have an ISBN, start a book intent
+                showProgress();
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
                 bookIntent.putExtra(BookService.EAN, ean);
                 bookIntent.putExtra("BOOK_DETAILS", mReceiver);
@@ -153,7 +175,14 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ean.setText("");
+
+                Intent bookIntent = new Intent(getActivity(), BookService.class);
+                //bookIntent.putExtra("BOOK_DATA", mVolumeInfo);
+                bookIntent.putExtra("RECEIVER",mReceiver);
+                bookIntent.setAction(BookService.SAVE_BOOK);
+                getActivity().startService(bookIntent);
+                showProgress();
+
             }
         });
 
@@ -233,6 +262,25 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     }
 
+    private  void showProgress()
+    {
+        rootView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.save_button).setClickable(false);
+        rootView.findViewById(R.id.delete_button).setClickable(false);
+    }
+
+    private  void hideProgress()
+    {
+        rootView.findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+        rootView.findViewById(R.id.save_button).setClickable(true);
+        rootView.findViewById(R.id.delete_button).setClickable(true);
+    }
+
+
+    private void clearISBNCode()
+    {
+        ((TextView) rootView.findViewById(R.id.ean)).setText("");
+    }
     private void clearFields() {
         ((TextView) rootView.findViewById(R.id.bookTitle)).setText("");
         ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText("");

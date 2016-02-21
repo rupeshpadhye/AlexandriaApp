@@ -4,7 +4,7 @@
 
     <!-- Menu Items -->
     <string name="books">List of Books</string>
-    <string name="scan">Scan/Add a Book</string>
+    <string name="scan">Add/Scan a Book</string>
     <string name="about">About this App</string>
 
     <string name="navigation_drawer_open" >Open navigation drawer</string>
@@ -14,7 +14,7 @@
     <string name="input_hint">Insert ISBN-13. Digits only.</string>
     <string name="book_cover">Bookcover</string>
 
-    <string name="ok_button">Next</string>
+    <string name="ok_button">Ok</string>
     <string name="cancel_button">Cancel</string>
     <string name="not_found">No Book found</string>
     <string name="search">Search</string>
@@ -27,7 +27,9 @@
 
     <string name="no_internet">No Internet </string>
     <string name="same_book">Can not add same book again </string>
-    <string name="search_hint">Author</string>
+    <string name="search_hint">Title</string>
+    <string name="book_save_success">Book saved successfully</string>
+    <string name="error">Something went wrong</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
