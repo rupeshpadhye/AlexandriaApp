@@ -30,6 +30,7 @@
     <string name="search_hint">Title</string>
     <string name="book_save_success">Book saved successfully</string>
     <string name="error">Something went wrong</string>
+    <string name="isbn">ISBN Number</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
