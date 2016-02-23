@@ -1,7 +1,6 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import it.jaschke.alexandria.api.BookDetailsReceiver;
 import it.jaschke.alexandria.data.AlexandriaContract;
@@ -41,6 +39,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     private static final int  BOOK_DETAIL_SUCCESS  =0;
     private static  final  int BOOK_SAVE_SUCCESS=1;
+    private  static  final int BOOK_BARCODE_READER=2;
 
     private VolumeInfo mVolumeInfo;
 
@@ -164,14 +163,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 //when you're done, remove the toast below.
 
                 Intent intent = new Intent(v.getContext(), BarcodeScanner.class);
-                startActivity(intent);
+                // startActivity(intent);
+                startActivityForResult(intent, BOOK_BARCODE_READER);
 
-                Context context = getActivity();
+               /* Context context = getActivity();
                 CharSequence text = "This button should let you scan a book for its barcode!";
                 int duration = Toast.LENGTH_SHORT;
 
                 Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
+                toast.show();*/
 
             }
         });
@@ -294,6 +294,19 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView.findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
         rootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==BOOK_BARCODE_READER)
+        {
+            String isbnNo=data.getStringExtra("ISBN_NO");
+            ean.setText(isbnNo);
+        }
+    }
+
 
     @Override
     public void onAttach(Activity activity) {
