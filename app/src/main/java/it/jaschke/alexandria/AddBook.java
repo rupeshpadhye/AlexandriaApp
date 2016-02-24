@@ -10,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private static final int  BOOK_DETAIL_SUCCESS  =0;
     private static  final  int BOOK_SAVE_SUCCESS=1;
     private  static  final int BOOK_BARCODE_READER=2;
+    private static final int SCAN_CANCEL=4;
 
     private VolumeInfo mVolumeInfo;
 
@@ -300,10 +302,16 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==BOOK_BARCODE_READER)
+
+        Log.d("Book",""+resultCode);
+        if(resultCode==BOOK_BARCODE_READER)
         {
             String isbnNo=data.getStringExtra("ISBN_NO");
             ean.setText(isbnNo);
+        }
+        else if(resultCode==SCAN_CANCEL)
+        {
+
         }
     }
 

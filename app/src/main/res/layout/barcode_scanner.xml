@@ -11,4 +11,29 @@
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/cancleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginRight="-8dip"
+            android:text="@string/cancel_button" />
+
+        <Button
+            android:id="@+id/ScanButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/scan_retry" />
+    </LinearLayout>
+
+
 </LinearLayout>

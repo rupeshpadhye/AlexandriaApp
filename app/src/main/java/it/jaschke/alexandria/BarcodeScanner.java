@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import net.sourceforge.zbar.Config;
@@ -30,7 +32,8 @@ public class BarcodeScanner extends AppCompatActivity {
     private CameraPreview mPreview;
     private Handler autoFocusHandler;
     private ImageScanner scanner;
-
+    private Button scanButton;
+    private Button cancleButton;
     private boolean barcodeScanned = false;
     private boolean previewing = true;
 
@@ -61,6 +64,33 @@ public class BarcodeScanner extends AppCompatActivity {
                 autoFocusCB);
         FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
+
+        scanButton = (Button) findViewById(R.id.ScanButton);
+        cancleButton=(Button) findViewById(R.id.cancleButton);
+
+
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (barcodeScanned) {
+                    barcodeScanned = false;
+                    mCamera.setPreviewCallback(previewCb);
+                    mCamera.startPreview();
+                    previewing = true;
+                    mCamera.autoFocus(autoFocusCB);
+                }
+            }
+        });
+
+
+        cancleButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                setResult(4,intent);
+                finish();
+            }
+
+        });
+
     }
 
 
