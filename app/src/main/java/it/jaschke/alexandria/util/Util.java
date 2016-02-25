@@ -2,6 +2,7 @@ package it.jaschke.alexandria.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
@@ -33,5 +34,12 @@ public final class Util {
     public static void hideSoftKeyboard(Context context,View view){
         InputMethodManager imm =(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+    }
+
+
+    public static  boolean isCameraAvailable(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        return packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
 }

@@ -10,7 +10,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -157,23 +156,22 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView.findViewById(R.id.scan_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // This is the callback method that the system will invoke when your button is
-                // clicked. You might do this by launching another app or by including the
-                //functionality directly in this app.
-                // Hint: Use a Try/Catch block to handle the Intent dispatch gracefully, if you
-                // are using an external app.
-                //when you're done, remove the toast below.
 
-                Intent intent = new Intent(v.getContext(), BarcodeScanner.class);
-                // startActivity(intent);
-                startActivityForResult(intent, BOOK_BARCODE_READER);
+                if (Util.isCameraAvailable(getContext())) {
+                    try {
+                        Intent intent = new Intent(v.getContext(), BarcodeScanner.class);
+                        startActivityForResult(intent, BOOK_BARCODE_READER);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                        Util.broadCastMessage(getContext(), getResources().getString(R.string.error));
+                    }
+                }
+                else {
+                    Util.broadCastMessage(getContext(),getResources().getString(R.string.no_camera));
+                }
 
-               /* Context context = getActivity();
-                CharSequence text = "This button should let you scan a book for its barcode!";
-                int duration = Toast.LENGTH_SHORT;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();*/
 
             }
         });
@@ -303,16 +301,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.d("Book",""+resultCode);
         if(resultCode==BOOK_BARCODE_READER)
         {
             String isbnNo=data.getStringExtra("ISBN_NO");
             ean.setText(isbnNo);
         }
-        else if(resultCode==SCAN_CANCEL)
-        {
 
-        }
     }
 
 

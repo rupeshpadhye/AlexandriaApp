@@ -1,11 +1,5 @@
 package it.jaschke.alexandria.CameraPreview;
 
-/*
- * Barebones implementation of displaying camera preview.
- *
- * Created by lisah0 on 2012-02-24
- */
-
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;

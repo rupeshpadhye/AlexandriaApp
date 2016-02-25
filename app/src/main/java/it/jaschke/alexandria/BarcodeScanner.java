@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -45,7 +46,7 @@ public class BarcodeScanner extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.barcode_scanner);
-
+        Log.d("BarcodeScanner","On create");
         initControls();
     }
 
@@ -54,7 +55,7 @@ public class BarcodeScanner extends AppCompatActivity {
 
         autoFocusHandler = new Handler();
         mCamera = getCameraInstance();
-
+        Log.d("BarcodeScanner",""+mCamera);
         // Instance barcode scanner
         scanner = new ImageScanner();
         scanner.setConfig(0, Config.X_DENSITY, 3);
@@ -84,6 +85,7 @@ public class BarcodeScanner extends AppCompatActivity {
 
         cancleButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
+                releaseCamera();
                 Intent intent=new Intent();
                 setResult(4,intent);
                 finish();
@@ -100,6 +102,24 @@ public class BarcodeScanner extends AppCompatActivity {
             releaseCamera();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mCamera != null) {
+            releaseCamera();
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mCamera == null) {
+           getCameraInstance() ;
+        }
     }
 
 
@@ -151,9 +171,6 @@ public class BarcodeScanner extends AppCompatActivity {
 
                     String scanResult = sym.getData().trim();
                     showAlertDialog(scanResult);
-
-                  /*  Toast.makeText(BarcodeScanner.this, scanResult,
-                            Toast.LENGTH_SHORT).show();*/
                     barcodeScanned = true;
                     break;
                 }
