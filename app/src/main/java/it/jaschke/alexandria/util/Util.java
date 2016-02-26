@@ -15,11 +15,11 @@ import it.jaschke.alexandria.MainActivity;
  * Created by RUPESH on 2/14/2016.
  */
 public final class Util {
-    private static final String LOG_TAG=Util.class.getName();
+
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-        return ( netInfo != null && netInfo.isConnected() );
+        return  netInfo != null && netInfo.isConnected();
     }
 
 
