@@ -24,7 +24,7 @@ import net.sourceforge.zbar.ImageScanner;
 import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 
-import it.jaschke.alexandria.CameraPreview.CameraPreview;
+import it.jaschke.alexandria.camerapreview.CameraPreview;
 
 
 public class BarcodeScanner extends AppCompatActivity {
