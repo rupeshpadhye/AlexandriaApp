@@ -42,109 +42,9 @@ public class BarcodeScanner extends AppCompatActivity {
         System.loadLibrary("iconv");
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.barcode_scanner);
-        Log.d("BarcodeScanner","On create");
-        initControls();
-    }
-
-    private void initControls() {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        autoFocusHandler = new Handler();
-        mCamera = getCameraInstance();
-        Log.d("BarcodeScanner",""+mCamera);
-        // Instance barcode scanner
-        scanner = new ImageScanner();
-        scanner.setConfig(0, Config.X_DENSITY, 3);
-        scanner.setConfig(0, Config.Y_DENSITY, 3);
-
-        mPreview = new CameraPreview(BarcodeScanner.this, mCamera, previewCb,
-                autoFocusCB);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
-        preview.addView(mPreview);
-
-        scanButton = (Button) findViewById(R.id.ScanButton);
-        cancleButton=(Button) findViewById(R.id.cancleButton);
-
-
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (barcodeScanned) {
-                    barcodeScanned = false;
-                    mCamera.setPreviewCallback(previewCb);
-                    mCamera.startPreview();
-                    previewing = true;
-                    mCamera.autoFocus(autoFocusCB);
-                }
-            }
-        });
-
-
-        cancleButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                releaseCamera();
-                Intent intent=new Intent();
-                setResult(4,intent);
-                finish();
-            }
-
-        });
-
-    }
-
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            releaseCamera();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mCamera != null) {
-            releaseCamera();
-        }
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mCamera == null) {
-           getCameraInstance() ;
-        }
-    }
-
-
-    /**
-     * A safe way to get an instance of the Camera object.
-     */
-    public static Camera getCameraInstance() {
-        Camera c = null;
-        try {
-            c = Camera.open();
-        } catch (Exception e) {
-        }
-        return c;
-    }
-
-    private void releaseCamera() {
-        if (mCamera != null) {
-            previewing = false;
-            mCamera.setPreviewCallback(null);
-            mCamera.release();
-            mCamera = null;
-        }
-    }
 
     private Runnable doAutoFocus = new Runnable() {
+        @Override
         public void run() {
             if (previewing)
                 mCamera.autoFocus(autoFocusCB);
@@ -185,8 +85,111 @@ public class BarcodeScanner extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.barcode_scanner);
+        Log.d("BarcodeScanner", "On create");
+        initControls();
+    }
 
-    private void showAlertDialog(final String  isbnNo) {
+    private void initControls() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        autoFocusHandler = new Handler();
+        mCamera = getCameraInstance();
+        Log.d("BarcodeScanner", "" + mCamera);
+        // Instance barcode scanner
+        scanner = new ImageScanner();
+        scanner.setConfig(0, Config.X_DENSITY, 3);
+        scanner.setConfig(0, Config.Y_DENSITY, 3);
+
+        mPreview = new CameraPreview(BarcodeScanner.this, mCamera, previewCb,
+                autoFocusCB);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
+        preview.addView(mPreview);
+
+        scanButton = (Button) findViewById(R.id.ScanButton);
+        cancleButton = (Button) findViewById(R.id.cancleButton);
+
+
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (barcodeScanned) {
+                    barcodeScanned = false;
+                    mCamera.setPreviewCallback(previewCb);
+                    mCamera.startPreview();
+                    previewing = true;
+                    mCamera.autoFocus(autoFocusCB);
+                }
+            }
+        });
+
+
+        cancleButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                releaseCamera();
+                Intent intent = new Intent();
+                setResult(4, intent);
+                finish();
+            }
+
+        });
+
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            releaseCamera();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mCamera != null) {
+            releaseCamera();
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mCamera == null) {
+            getCameraInstance();
+        }
+    }
+
+
+    /**
+     * A safe way to get an instance of the Camera object.
+     */
+    public static Camera getCameraInstance() {
+        Camera c = null;
+        try {
+            c = Camera.open();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return c;
+    }
+
+    private void releaseCamera() {
+        if (mCamera != null) {
+            previewing = false;
+            mCamera.setPreviewCallback(null);
+            mCamera.release();
+            mCamera = null;
+        }
+    }
+
+
+    private void showAlertDialog(final String isbnNo) {
 
         new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.isbn))
@@ -195,9 +198,9 @@ public class BarcodeScanner extends AppCompatActivity {
                 .setPositiveButton(getResources().getString(R.string.ok_button), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Intent intent=new Intent();
-                        intent.putExtra("ISBN_NO",isbnNo);
-                        setResult(2,intent);
+                        Intent intent = new Intent();
+                        intent.putExtra("ISBN_NO", isbnNo);
+                        setResult(2, intent);
                         finish();
                     }
                 })

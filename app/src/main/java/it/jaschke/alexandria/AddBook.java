@@ -1,13 +1,11 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -19,37 +17,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import it.jaschke.alexandria.api.BookDetailsReceiver;
-import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.dto.VolumeInfo;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
 import it.jaschke.alexandria.util.Util;
 
 
-public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, BookDetailsReceiver.Receiver {
-    private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
+public class AddBook extends Fragment implements  BookDetailsReceiver.Receiver {
     private EditText ean;
-    private final int LOADER_ID = 1;
     private View rootView;
-    private final String EAN_CONTENT = "eanContent";
-    private static final String SCAN_FORMAT = "scanFormat";
-    private static final String SCAN_CONTENTS = "scanContents";
-    private String mScanFormat = "Format:";
-    private String mScanContents = "Contents:";
-
+    private BookDetailsReceiver mReceiver;
+    private static final String EAN_CONTENT = "eanContent";
     private static final int  BOOK_DETAIL_SUCCESS  =0;
     private static  final  int BOOK_SAVE_SUCCESS=1;
     private  static  final int BOOK_BARCODE_READER=2;
-    private static final int SCAN_CANCEL=4;
-
-    private VolumeInfo mVolumeInfo;
-
-
-    private BookDetailsReceiver mReceiver;
-
-
-    public AddBook() {
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -70,21 +51,17 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-
         hideProgress();
         if(resultCode==BOOK_DETAIL_SUCCESS) {
-            mVolumeInfo = resultData.getParcelable("BOOK_DETAILS");
+            VolumeInfo mVolumeInfo = resultData.getParcelable(BookService.BOOK_DETAILS);
             updateView(mVolumeInfo);
         }
-        else if(resultCode==BOOK_SAVE_SUCCESS)
-        {
+        else if(resultCode==BOOK_SAVE_SUCCESS) {
             Util.broadCastMessage(getContext(), getResources().getString(R.string.book_save_success));
             clearISBNCode();
-
         }
         else{
             Util.broadCastMessage(getContext(), getResources().getString(R.string.error));
-
         }
 
 
@@ -133,23 +110,23 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
             @Override
             public void afterTextChanged(Editable s) {
-                String ean = s.toString();
+                String isbn = s.toString();
                 //catch isbn10 numbers
-                if (ean.length() == 10 && !ean.startsWith("978")) {
-                    ean = "978" + ean;
+                if (isbn.length() == 10 && !isbn.startsWith("978")) {
+                    isbn = "978" + isbn;
                 }
-                if (ean.length() < 13) {
+                if (isbn.length() < 13) {
                     clearFields();
                     return;
                 }
                 //Once we have an ISBN, start a book intent
                 showProgress();
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean);
-                bookIntent.putExtra("BOOK_DETAILS", mReceiver);
+                bookIntent.putExtra(BookService.EAN, isbn);
+                bookIntent.putExtra(BookService.BOOK_DETAILS, mReceiver);
                 bookIntent.setAction(BookService.FETCH_BOOK);
                 getActivity().startService(bookIntent);
-                // AddBook.this.restartLoader();
+
             }
         });
 
@@ -161,15 +138,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     try {
                         Intent intent = new Intent(v.getContext(), BarcodeScanner.class);
                         startActivityForResult(intent, BOOK_BARCODE_READER);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
+                    } catch (Exception e) {
                         Util.broadCastMessage(getContext(), getResources().getString(R.string.error));
+                      e.printStackTrace();
+
                     }
-                }
-                else {
-                    Util.broadCastMessage(getContext(),getResources().getString(R.string.no_camera));
+                } else {
+                    Util.broadCastMessage(getContext(), getResources().getString(R.string.no_camera));
                 }
 
 
@@ -207,63 +182,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         }
 
         return rootView;
-    }
-
-    private void restartLoader() {
-        getLoaderManager().restartLoader(LOADER_ID, null, this);
-    }
-
-    @Override
-    public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (ean.getText().length() == 0) {
-            return null;
-        }
-        String eanStr = ean.getText().toString();
-        if (eanStr.length() == 10 && !eanStr.startsWith("978")) {
-            eanStr = "978" + eanStr;
-        }
-        return new CursorLoader(
-                getActivity(),
-                AlexandriaContract.BookEntry.buildFullBookUri(Long.parseLong(eanStr)),
-                null,
-                null,
-                null,
-                null
-        );
-    }
-
-    @Override
-    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst()) {
-            return;
-        }
-
-        String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
-        ((TextView) rootView.findViewById(R.id.bookTitle)).setText(bookTitle);
-
-        String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
-        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(bookSubTitle);
-
-        String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
-        ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
-        ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",", "\n"));
-        String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
-            new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
-            rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
-        }
-
-        String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
-        ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
-
-        rootView.findViewById(R.id.save_button).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-
     }
 
     private  void showProgress()
@@ -311,8 +229,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        activity.setTitle(R.string.scan);
+    public void onAttach(Context context) {
+
+        super.onAttach(context);
+        if(context instanceof Activity) {
+            Activity   activity=(Activity)context;
+            activity.setTitle(R.string.scan);
+        }
     }
+
 }

@@ -42,6 +42,7 @@ public class BookService extends IntentService {
     public static final String SAVE_BOOK = "it.jaschke.alexandria.services.action.SAVE_BOOK";
 
     public static final String EAN = "it.jaschke.alexandria.services.extra.EAN";
+    public static final String BOOK_DETAILS = "BOOK_DETAILS";
 
     public BookService() {
         super("Alexandria");

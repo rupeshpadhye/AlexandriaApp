@@ -30,12 +30,10 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     private ListView bookList;
     private int position = ListView.INVALID_POSITION;
     private EditText searchText;
-    private final String  LOG_TAG=ListOfBooks.class.getName();
+    private Cursor mCursor;
+    private static final String  LOG_TAG=ListOfBooks.class.getName();
 
-    private final int LOADER_ID = 10;
-
-    public ListOfBooks() {
-    }
+    private static final int LOADER_ID = 10;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,31 +42,30 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    Log.d(LOG_TAG,"ListBooks Oncreate");
-        Cursor cursor = getActivity().getContentResolver().query(
+        Log.d(LOG_TAG, "ListBooks On create");
+       /* mCursor = getActivity().getContentResolver().query(
                 AlexandriaContract.BookEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
                 null  // sort order
         );
+*/
 
-
-        bookListAdapter = new BookListAdapter(getActivity(), cursor, 0);
         View rootView = inflater.inflate(R.layout.fragment_list_of_books, container, false);
         searchText = (EditText) rootView.findViewById(R.id.searchText);
+
         rootView.findViewById(R.id.searchButton).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       /* if(searchText.getText().toString().isEmpty()) {
-                            Snackbar.make(getView(), "Input author name", Snackbar.LENGTH_LONG).show();
-                            return;
-                        }*/
                         ListOfBooks.this.restartLoader();
                     }
                 }
         );
+
+        getLoaderManager().initLoader(LOADER_ID,null,this);
+        bookListAdapter = new BookListAdapter(getActivity(), mCursor, 0);
 
         bookList = (ListView) rootView.findViewById(R.id.listOfBooks);
         bookList.setAdapter(bookListAdapter);
@@ -80,7 +77,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 Cursor cursor = bookListAdapter.getCursor();
 
                 if (cursor != null && cursor.moveToPosition(position)) {
-                    Util.hideSoftKeyboard(getContext(),getView());
+                    Util.hideSoftKeyboard(getContext(), getView());
                     ((Callback) getActivity())
                             .onItemSelected(cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry._ID)));
 
@@ -100,47 +97,56 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        final String selection = AlexandriaContract.BookEntry.TITLE +" LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
-        String searchString =searchText.getText().toString();
-        Log.d(LOG_TAG,"Searched->"+searchString);
-        if(searchString.length()>0){
-            searchString = "%"+searchString+"%";
-            return new CursorLoader(
-                    getActivity(),
-                    AlexandriaContract.BookEntry.CONTENT_URI,
-                    null,
-                    selection,
-                    new String[]{searchString,searchString},
-                    null
-            );
-        }
-        Log.d(LOG_TAG,"get all books->");
-        return new CursorLoader(
-                getActivity(),
-                AlexandriaContract.BookEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                null
-        );
+            final String selection = AlexandriaContract.BookEntry.TITLE + " LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
+            String searchString = searchText.getText().toString();
+            Log.d(LOG_TAG,searchString);
+            if (searchString.length() > 0) {
+                searchString = "%" + searchString + "%";
+                return new CursorLoader(
+                        getActivity(),
+                        AlexandriaContract.BookEntry.CONTENT_URI,
+                        null,
+                        selection,
+                        new String[]{searchString, searchString},
+                        null
+                );
+            }
+            else {
+                Log.d(LOG_TAG, "get all books->");
+                return new CursorLoader(
+                        getActivity(),
+                        AlexandriaContract.BookEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+            }
+
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         bookListAdapter.swapCursor(data);
-        Log.d(LOG_TAG,"onLoadFinished"+bookListAdapter.getCount());
+            Log.d(LOG_TAG, "onLoadFinished" + bookListAdapter.getCount());
+            if (bookListAdapter.getCount() == 0 && getView() != null) {
+                Snackbar.make(getView(), "No results with searched author", Snackbar.LENGTH_LONG).show();
+            }
+            if (position != ListView.INVALID_POSITION) {
+                bookList.smoothScrollToPosition(position);
+            }
 
-        if(bookListAdapter.getCount()==0) {
-            Snackbar.make(getView(), "No results with searched author", Snackbar.LENGTH_LONG).show();
-        }
-        if (position != ListView.INVALID_POSITION) {
-            bookList.smoothScrollToPosition(position);
-        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         bookListAdapter.swapCursor(null);
+    }
+
+
+    @Override
+    public  void onDestroy(){
+        mCursor=null;
     }
 
     //removed deprecated method onAttach(Activity) to onAttach(context) -Rupesh P
