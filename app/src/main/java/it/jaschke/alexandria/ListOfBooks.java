@@ -30,7 +30,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     private ListView bookList;
     private int position = ListView.INVALID_POSITION;
     private EditText searchText;
-    private Cursor mCursor;
+   // private Cursor mCursor;
     private static final String  LOG_TAG=ListOfBooks.class.getName();
 
     private static final int LOADER_ID = 10;
@@ -43,18 +43,9 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(LOG_TAG, "ListBooks On create");
-       /* mCursor = getActivity().getContentResolver().query(
-                AlexandriaContract.BookEntry.CONTENT_URI,
-                null, // leaving "columns" null just returns all the columns.
-                null, // cols for "where" clause
-                null, // values for "where" clause
-                null  // sort order
-        );
-*/
 
         View rootView = inflater.inflate(R.layout.fragment_list_of_books, container, false);
         searchText = (EditText) rootView.findViewById(R.id.searchText);
-
         rootView.findViewById(R.id.searchButton).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -64,8 +55,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 }
         );
 
-        getLoaderManager().initLoader(LOADER_ID,null,this);
-        bookListAdapter = new BookListAdapter(getActivity(), mCursor, 0);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+        bookListAdapter = new BookListAdapter(getActivity(), null, 0);
 
         bookList = (ListView) rootView.findViewById(R.id.listOfBooks);
         bookList.setAdapter(bookListAdapter);
@@ -129,7 +120,12 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         bookListAdapter.swapCursor(data);
             Log.d(LOG_TAG, "onLoadFinished" + bookListAdapter.getCount());
-            if (bookListAdapter.getCount() == 0 && getView() != null) {
+            if (bookListAdapter.getCount() == 0
+                    &&
+                    searchText.getText().toString()!=null
+                    &&
+                    !searchText.getText().toString().isEmpty()
+                    ) {
                 Snackbar.make(getView(), "No results with searched author", Snackbar.LENGTH_LONG).show();
             }
             if (position != ListView.INVALID_POSITION) {
@@ -144,10 +140,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     }
 
 
-    @Override
-    public  void onDestroy(){
-        mCursor=null;
-    }
+
 
     //removed deprecated method onAttach(Activity) to onAttach(context) -Rupesh P
     @Override

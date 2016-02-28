@@ -32,16 +32,6 @@
                     android:layout_alignParentStart="true"
                     android:layout_margin="10dp"/>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/fullBookCover"
-                    android:contentDescription="@string/book_cover"
-                    android:layout_marginTop="15dp"
-                    android:layout_below="@+id/fullBookTitle"
-                    android:layout_alignLeft="@+id/fullBookTitle"
-                    android:layout_alignStart="@+id/fullBookTitle"/>
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -61,11 +51,22 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/fullBookDesc"
                     android:ellipsize="end"
+                    android:paddingTop="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_below="@+id/fullBookCover"
                     android:layout_margin="10dp"
                     />
 
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fullBookCover"
+                    android:contentDescription="@string/book_cover"
+                    android:layout_marginTop="15dp"
+                    android:layout_below="@+id/fullBookTitle"
+                    android:layout_alignLeft="@+id/fullBookTitle"
+                    android:layout_alignStart="@+id/fullBookTitle"/>
 
                 <LinearLayout
                     android:orientation="horizontal"

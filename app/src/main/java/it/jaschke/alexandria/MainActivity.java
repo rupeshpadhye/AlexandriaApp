@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -19,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import it.jaschke.alexandria.api.Callback;
+import it.jaschke.alexandria.util.Util;
 
 
 /*
@@ -43,9 +43,16 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IS_TABLET = isTablet();
+        IS_TABLET = Util.isTablet(getApplicationContext());
         if(IS_TABLET){
             setContentView(R.layout.activity_main_tablet);
+
+                if (savedInstanceState == null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.right_container, new BookDetail())
+                            .commit();
+                }
+
         }else {
             setContentView(R.layout.activity_main);
         }
@@ -60,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer,
-                    (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout));
 
     }
 
@@ -138,22 +145,25 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     @Override
     public void onItemSelected(String ean) {
-        Bundle args = new Bundle();
-        args.putString(BookDetail.EAN_KEY, ean);
 
-        BookDetail fragment = new BookDetail();
-        fragment.setArguments(args);
-
-        int id = R.id.container;
-        if(findViewById(R.id.right_container) != null){
-            id = R.id.right_container;
+        if(IS_TABLET)
+        {
+           BookDetail bookDetail =(BookDetail)getSupportFragmentManager().findFragmentById(R.id.right_container);
+            bookDetail.updateView(ean);
+            Log.d("MainActivity","isTablet");
         }
-        getSupportFragmentManager().beginTransaction()
-                .replace(id, fragment)
-                .addToBackStack("Book Detail")
-                .commit();
-
-        Log.d("MainActivity","end of onItemSelected");
+        else {
+            Bundle args = new Bundle();
+            args.putString(BookDetail.EAN_KEY, ean);
+            BookDetail fragment = new BookDetail();
+            fragment.setArguments(args);
+            int id = R.id.container;
+            getSupportFragmentManager().beginTransaction()
+                    .replace(id, fragment)
+                    .addToBackStack("Book Detail")
+                    .commit();
+        }
+        Log.d("MainActivity", "end of onItemSelected");
     }
 
     private class MessageReciever extends BroadcastReceiver {
@@ -169,11 +179,11 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         getSupportFragmentManager().popBackStack();
     }
 
-    private boolean isTablet() {
+ /*   private boolean isTablet() {
         return (getApplicationContext().getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
+    }*/
 
     @Override
     public void onBackPressed() {

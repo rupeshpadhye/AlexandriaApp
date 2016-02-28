@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.List;
 
 import it.jaschke.alexandria.R;
+import it.jaschke.alexandria.constant.AlexandriaConstants;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.dto.BookInfo;
 import it.jaschke.alexandria.dto.VolumeInfo;
@@ -129,7 +130,14 @@ public class BookService extends IntentService {
 
     private void saveBook(VolumeInfo volumeInfo,ResultReceiver resultReceiver) {
 
+
         String ean = volumeInfo.getIndustryIdentifiers().get(1).getIdentifier();
+
+        if (isBookPreviouslyAdded(ean)) {
+            resultReceiver.send(AlexandriaConstants.BOOK_PRESENT, null);
+            return;
+        }
+
         String title = volumeInfo.getTitle();
         String subtitle = volumeInfo.getSubtitle();
         String desc = volumeInfo.getDescription();
@@ -144,7 +152,7 @@ public class BookService extends IntentService {
         }
 
         Bundle bundle=new Bundle();
-        resultReceiver.send(1,bundle);
+        resultReceiver.send(AlexandriaConstants.BOOK_SAVE_SUCCESS,bundle);
     }
 
     /**
@@ -185,15 +193,10 @@ public class BookService extends IntentService {
             return;
         }
 
-        if (isBookPreviouslyAdded(ean)) {
-            Util.broadCastMessage(getApplicationContext(), getApplication().getResources().getString(R.string.same_book));
-            return;
-        }
-
         String response = getBookDetails(ean);
 
         if (response == null && !Util.isNetworkConnected(getApplicationContext())) {
-            Util.broadCastMessage(getApplicationContext(), getApplication().getResources().getString(R.string.no_internet));
+            rec.send(AlexandriaConstants.NO_INTERNET,null);
             return;
         } else if (response == null) {
             Util.broadCastMessage(getApplicationContext(), getApplication().getResources().getString(R.string.not_found));
@@ -212,8 +215,8 @@ public class BookService extends IntentService {
         volumeInfo=bookInfo.getItems().get(0).getVolumeInfo();
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable("BOOK_DETAILS", bookInfo.getItems().get(0).getVolumeInfo());
-        rec.send(0, bundle);
+        bundle.putParcelable(AlexandriaConstants.BOOK_DETAILS, bookInfo.getItems().get(0).getVolumeInfo());
+        rec.send(AlexandriaConstants.BOOK_DETAIL_SUCCESS, bundle);
     }
 
     private void writeBackBook(String ean, String title, String subtitle, String desc, String imgUrl) {

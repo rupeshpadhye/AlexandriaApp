@@ -21,6 +21,7 @@ import android.widget.TextView;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
+import it.jaschke.alexandria.util.Util;
 
 
 public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -30,6 +31,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     private View rootView;
     private String ean;
     private String bookTitle;
+    private boolean  IS_TABLET=false;
     private ShareActionProvider shareActionProvider;
 
     @Override
@@ -38,6 +40,11 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         setHasOptionsMenu(true);
     }
 
+
+    public void updateView(String isbn) {
+        ean=isbn;
+        getLoaderManager().restartLoader(LOADER_ID, null, this);
+    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +55,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
             getLoaderManager().restartLoader(LOADER_ID, null, this);
         }
 
+         IS_TABLET = Util.isTablet(getActivity());
         rootView = inflater.inflate(R.layout.fragment_full_book, container, false);
         rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,12 +64,28 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
                 bookIntent.putExtra(BookService.EAN, ean);
                 bookIntent.setAction(BookService.DELETE_BOOK);
                 getActivity().startService(bookIntent);
-                getActivity().getSupportFragmentManager().popBackStack();
+
+                if (IS_TABLET) {
+                    clearFields();
+                }
+                else {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
             }
         });
         return rootView;
     }
 
+
+     private void clearFields() {
+        ((TextView) rootView.findViewById(R.id.fullBookTitle)).setText("");
+        ((TextView) getView().findViewById(R.id.fullBookSubTitle)).setText("");
+        ((TextView) getView().findViewById(R.id.authors)).setText("");
+         ((TextView) getView().findViewById(R.id.categories)).setText("");
+         ((TextView) getView().findViewById(R.id.fullBookDesc)).setText("");
+        getView().findViewById(R.id.fullBookCover).setVisibility(View.INVISIBLE);
+        getView().findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -95,8 +119,11 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text)+bookTitle);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
         shareActionProvider.setShareIntent(shareIntent);
+
+
+        rootView.findViewById(R.id.delete_button).setVisibility(View.VISIBLE);
 
         String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
         ((TextView) rootView.findViewById(R.id.fullBookSubTitle)).setText(bookSubTitle);
@@ -117,9 +144,11 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         ((TextView) rootView.findViewById(R.id.categories)).setText(categories);
 
-        if(rootView.findViewById(R.id.right_container)!=null){
+        if(IS_TABLET){
             rootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);
         }
+
+
 
     }
 
@@ -131,7 +160,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Override
     public void onPause() {
         super.onDestroyView();
-        if(MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container)==null){
+        if(IS_TABLET && rootView.findViewById(R.id.right_container)==null){
             getActivity().getSupportFragmentManager().popBackStack();
         }
     }

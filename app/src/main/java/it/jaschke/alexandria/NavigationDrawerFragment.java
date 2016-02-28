@@ -21,6 +21,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import it.jaschke.alexandria.util.Util;
+
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
@@ -109,6 +111,7 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.scan),
                         getString(R.string.about),
                 }));
+
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
@@ -172,6 +175,10 @@ public class NavigationDrawerFragment extends Fragment {
                 }
 
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+            }
+
+            @Override public void onDrawerStateChanged(int newState) {
+                Util.hideSoftKeyboard(getActivity(), mDrawerLayout);
             }
         };
 

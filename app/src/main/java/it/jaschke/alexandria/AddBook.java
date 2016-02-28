@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import it.jaschke.alexandria.api.BookDetailsReceiver;
+import it.jaschke.alexandria.constant.AlexandriaConstants;
 import it.jaschke.alexandria.dto.VolumeInfo;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
@@ -27,16 +28,14 @@ public class AddBook extends Fragment implements  BookDetailsReceiver.Receiver {
     private EditText ean;
     private View rootView;
     private BookDetailsReceiver mReceiver;
-    private static final String EAN_CONTENT = "eanContent";
-    private static final int  BOOK_DETAIL_SUCCESS  =0;
-    private static  final  int BOOK_SAVE_SUCCESS=1;
-    private  static  final int BOOK_BARCODE_READER=2;
+
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (ean != null) {
-            outState.putString(EAN_CONTENT, ean.getText().toString());
+            outState.putString(AlexandriaConstants.EAN_CONTENT, ean.getText().toString());
         }
     }
 
@@ -52,13 +51,20 @@ public class AddBook extends Fragment implements  BookDetailsReceiver.Receiver {
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         hideProgress();
-        if(resultCode==BOOK_DETAIL_SUCCESS) {
+        if(resultCode==AlexandriaConstants.BOOK_DETAIL_SUCCESS) {
             VolumeInfo mVolumeInfo = resultData.getParcelable(BookService.BOOK_DETAILS);
             updateView(mVolumeInfo);
         }
-        else if(resultCode==BOOK_SAVE_SUCCESS) {
+        else if(resultCode==AlexandriaConstants.BOOK_SAVE_SUCCESS) {
             Util.broadCastMessage(getContext(), getResources().getString(R.string.book_save_success));
             clearISBNCode();
+        }
+        else if(resultCode==AlexandriaConstants.NO_INTERNET){
+            Util.broadCastMessage(getContext(), getResources().getString(R.string.no_internet));
+        }
+        else if(resultCode==AlexandriaConstants.BOOK_PRESENT)
+        {
+            Util.broadCastMessage(getContext(), getResources().getString(R.string.same_book));
         }
         else{
             Util.broadCastMessage(getContext(), getResources().getString(R.string.error));
@@ -111,6 +117,11 @@ public class AddBook extends Fragment implements  BookDetailsReceiver.Receiver {
             @Override
             public void afterTextChanged(Editable s) {
                 String isbn = s.toString();
+
+                if(isbn.length()==0)
+                {
+                    hideProgress();
+                }
                 //catch isbn10 numbers
                 if (isbn.length() == 10 && !isbn.startsWith("978")) {
                     isbn = "978" + isbn;
@@ -137,7 +148,7 @@ public class AddBook extends Fragment implements  BookDetailsReceiver.Receiver {
                 if (Util.isCameraAvailable(getContext())) {
                     try {
                         Intent intent = new Intent(v.getContext(), BarcodeScanner.class);
-                        startActivityForResult(intent, BOOK_BARCODE_READER);
+                        startActivityForResult(intent, AlexandriaConstants.BOOK_BARCODE_READER);
                     } catch (Exception e) {
                         Util.broadCastMessage(getContext(), getResources().getString(R.string.error));
                       e.printStackTrace();
@@ -177,7 +188,7 @@ public class AddBook extends Fragment implements  BookDetailsReceiver.Receiver {
         });
 
         if (savedInstanceState != null) {
-            ean.setText(savedInstanceState.getString(EAN_CONTENT));
+            ean.setText(savedInstanceState.getString(AlexandriaConstants.EAN_CONTENT));
             ean.setHint("");
         }
 
@@ -219,7 +230,7 @@ public class AddBook extends Fragment implements  BookDetailsReceiver.Receiver {
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode==BOOK_BARCODE_READER)
+        if(resultCode==AlexandriaConstants.BOOK_BARCODE_READER)
         {
             String isbnNo=data.getStringExtra("ISBN_NO");
             ean.setText(isbnNo);
