@@ -7,7 +7,7 @@ package it.jaschke.alexandria.data;
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.util.Log;
+
 
 public class AlexandriaContract{
 
