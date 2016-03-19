@@ -1,5 +1,6 @@
+//-----------------------------------------------------------------------------
 package it.jaschke.alexandria;
-
+//-----------------------------------------------------------------------------
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,19 +13,25 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.util.Util;
-
-
-/*
-    Replaced deprecated ActionBarActivity with AppCompatActivity
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+/**
+ *   MainActivity of application
+ *
  */
-public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
+//-----------------------------------------------------------------------------
+/*
+
+ */
+public class    MainActivity
+        extends AppCompatActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -150,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         {
            BookDetail bookDetail =(BookDetail)getSupportFragmentManager().findFragmentById(R.id.right_container);
             bookDetail.updateView(ean);
-            Log.d("MainActivity","isTablet");
         }
         else {
             Bundle args = new Bundle();
@@ -163,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                     .addToBackStack("Book Detail")
                     .commit();
         }
-        Log.d("MainActivity", "end of onItemSelected");
+
     }
 
     private class MessageReciever extends BroadcastReceiver {
@@ -195,3 +201,5 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
 
 }
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------

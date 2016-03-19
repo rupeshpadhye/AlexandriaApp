@@ -1,5 +1,6 @@
+//-----------------------------------------------------------------------------
 package it.jaschke.alexandria.services;
-
+//-----------------------------------------------------------------------------
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -26,13 +27,14 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.dto.BookInfo;
 import it.jaschke.alexandria.dto.VolumeInfo;
 import it.jaschke.alexandria.util.Util;
-
-
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
  * <p/>
  */
+//-----------------------------------------------------------------------------
 public class BookService extends IntentService {
 
     private final String LOG_TAG = BookService.class.getSimpleName();
@@ -207,8 +209,7 @@ public class BookService extends IntentService {
         BookInfo bookInfo = gson.fromJson(response, BookInfo.class);
         Log.d(LOG_TAG, bookInfo.toString());
 
-        if(bookInfo.getItems()==null || bookInfo.getItems().isEmpty())
-        {
+        if(bookInfo.getItems()==null || bookInfo.getItems().isEmpty()) {
             Util.broadCastMessage(getApplicationContext(), getApplication().getResources().getString(R.string.not_found));
             return;
         }
@@ -249,3 +250,5 @@ public class BookService extends IntentService {
         }
     }
 }
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------

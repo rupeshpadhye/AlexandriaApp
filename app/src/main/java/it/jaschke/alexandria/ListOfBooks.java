@@ -126,7 +126,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                     &&
                     !searchText.getText().toString().isEmpty()
                     ) {
-                Snackbar.make(getView(), "No results with searched author", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(getView(), getResources().getString(R.string.no_result), Snackbar.LENGTH_LONG).show();
             }
             if (position != ListView.INVALID_POSITION) {
                 bookList.smoothScrollToPosition(position);

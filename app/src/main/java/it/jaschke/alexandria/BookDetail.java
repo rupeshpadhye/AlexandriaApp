@@ -1,5 +1,6 @@
+//-----------------------------------------------------------------------------
 package it.jaschke.alexandria;
-
+//-----------------------------------------------------------------------------
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,8 +23,11 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
 import it.jaschke.alexandria.util.Util;
-
-
+//-----------------------------------------------------------------------------
+/**
+ *  Fragments showing book details
+ */
+//-----------------------------------------------------------------------------
 public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String EAN_KEY = "EAN";
@@ -165,3 +169,5 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         }
     }
 }
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------

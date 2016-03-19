@@ -1,9 +1,12 @@
+//-----------------------------------------------------------------------------
 package it.jaschke.alexandria;
-
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
  * Created by RUPESH on 2/22/2016.
+ * Bar code scanner functionality
  */
-
+//-----------------------------------------------------------------------------
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -25,7 +28,7 @@ import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 
 import it.jaschke.alexandria.camerapreview.CameraPreview;
-
+//-----------------------------------------------------------------------------
 
 public class BarcodeScanner extends AppCompatActivity {
 
@@ -209,3 +212,5 @@ public class BarcodeScanner extends AppCompatActivity {
     }
 
 }
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------

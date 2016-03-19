@@ -70,7 +70,6 @@ public class AddBook extends Fragment implements  BookDetailsReceiver.Receiver {
             Util.broadCastMessage(getContext(), getResources().getString(R.string.error));
         }
 
-
     }
 
     private void updateView(VolumeInfo volumeInfo) {

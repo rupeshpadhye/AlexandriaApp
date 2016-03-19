@@ -1,5 +1,6 @@
+//-----------------------------------------------------------------------------
 package it.jaschke.alexandria.services;
-
+//-----------------------------------------------------------------------------
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -7,10 +8,12 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.InputStream;
-
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
  * Created by saj on 11/01/15.
  */
+//-----------------------------------------------------------------------------
 public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
     ImageView bmImage;
 
@@ -35,4 +38,5 @@ public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
         bmImage.setImageBitmap(result);
     }
 }
-
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------

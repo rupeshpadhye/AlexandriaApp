@@ -1,13 +1,18 @@
+//-----------------------------------------------------------------------------
 package it.jaschke.alexandria.dto;
+//-----------------------------------------------------------------------------
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import lombok.Data;
+//-----------------------------------------------------------------------------
 
 /**
  * Created by RUPESH on 2/14/2016.
  */
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 @Data
 public class ImageLinks implements Parcelable {
     private String thumbnail;
@@ -31,7 +36,8 @@ public class ImageLinks implements Parcelable {
         out.writeString(smallThumbnail);
     }
 
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+    public static final Parcelable.Creator CREATOR =
+                                            new Parcelable.Creator() {
         public ImageLinks createFromParcel(Parcel in) {
             return new ImageLinks(in);
         }
@@ -41,3 +47,5 @@ public class ImageLinks implements Parcelable {
         }
     };
 }
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------

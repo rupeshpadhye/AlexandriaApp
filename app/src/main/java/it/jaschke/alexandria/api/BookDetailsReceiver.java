@@ -1,12 +1,16 @@
+//-----------------------------------------------------------------------------
 package it.jaschke.alexandria.api;
-
+//-----------------------------------------------------------------------------
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
  * Created by RUPESH on 2/14/2016.
  */
+//-----------------------------------------------------------------------------
 @SuppressLint("ParcelCreator")
 public class BookDetailsReceiver extends ResultReceiver {
 
@@ -33,3 +37,6 @@ public class BookDetailsReceiver extends ResultReceiver {
         }
     }
 }
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------

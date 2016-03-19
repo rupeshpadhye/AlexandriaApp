@@ -1,5 +1,6 @@
+//-----------------------------------------------------------------------------
 package it.jaschke.alexandria.util;
-
+//-----------------------------------------------------------------------------
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,14 +12,17 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import it.jaschke.alexandria.MainActivity;
-
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 /**
  * Created by RUPESH on 2/14/2016.
  */
+//-----------------------------------------------------------------------------
 public final class Util {
 
     public static boolean isNetworkConnected(Context context) {
-        ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager conManager = (ConnectivityManager)
+                      context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conManager.getActiveNetworkInfo();
         return  netInfo != null && netInfo.isConnected();
     }
@@ -33,7 +37,8 @@ public final class Util {
 
 
     public static void hideSoftKeyboard(Context context,View view){
-        InputMethodManager imm =(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm =(InputMethodManager)context.getSystemService(
+                                        Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
     }
@@ -51,3 +56,5 @@ public final class Util {
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------

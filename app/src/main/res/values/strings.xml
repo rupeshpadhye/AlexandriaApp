@@ -24,6 +24,7 @@
     <string name="action_share">Share</string>
     <string name="back_button">go back</string>
     <string name="share_text">A must read book: </string>
+    <string name="no_result">"No results"</string>
 
     <string name="no_internet">No Internet </string>
     <string name="same_book">Book Already Added </string>
