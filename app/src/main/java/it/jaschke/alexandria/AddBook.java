@@ -73,15 +73,23 @@ public class AddBook extends Fragment implements  BookDetailsReceiver.Receiver {
     }
 
     private void updateView(VolumeInfo volumeInfo) {
-        ((TextView) rootView.findViewById(R.id.bookTitle)).setText(volumeInfo.getTitle());
-        ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(volumeInfo.getSubtitle());
-        ((TextView) rootView.findViewById(R.id.authors)).setLines(volumeInfo.getAuthors().size());
+        if(volumeInfo.getTitle()!=null) {
+            ((TextView) rootView.findViewById(R.id.bookTitle)).setText(volumeInfo.getTitle());
+        }
+
+        if(volumeInfo.getSubtitle()!=null) {
+            ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(volumeInfo.getSubtitle());
+        }
 
         String authors="";
-        for(String author:volumeInfo.getAuthors()) {
-            authors+=author+"\n";
+        if(volumeInfo.getAuthors()!=null) {
+            ((TextView) rootView.findViewById(R.id.authors)).setLines(volumeInfo.getAuthors().size());
+            for(String author:volumeInfo.getAuthors()) {
+                authors+=author+"\n";
+            }
+            ((TextView) rootView.findViewById(R.id.authors)).setText(authors);
         }
-        ((TextView) rootView.findViewById(R.id.authors)).setText(authors);
+
 
         if (Patterns.WEB_URL.matcher(volumeInfo.getImageLinks().getThumbnail()).matches()) {
             new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover))
