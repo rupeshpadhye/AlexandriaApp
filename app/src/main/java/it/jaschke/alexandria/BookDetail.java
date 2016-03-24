@@ -37,7 +37,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     private String bookTitle;
     private boolean  IS_TABLET=false;
     private ShareActionProvider shareActionProvider;
-    private Intent shareIntent;
+   // private Intent shareIntent;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +96,8 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         MenuItem menuItem = menu.findItem(R.id.action_share);
         shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-        if (null != shareIntent) {
-            shareActionProvider.setShareIntent(shareIntent);
+        if (null != bookTitle) {
+            shareActionProvider.setShareIntent(createShareIntent());
         }
 
     }
@@ -116,7 +116,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
 
     public Intent createShareIntent() {
-        shareIntent = new Intent(Intent.ACTION_SEND);
+       Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
